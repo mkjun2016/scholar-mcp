@@ -14,8 +14,6 @@ Supports:
 - Abstract extraction
 - Multi-paper comparison
 
----
-
 ## Features
 
 * **read_pdf** — Extract full text from a PDF file
@@ -23,8 +21,6 @@ Supports:
 * **compare_papers** — Extract and prepare multiple papers for comparison
 * **ping** — Test connectivity
 * **update_analysis_policy (with dry-run)** — Demonstrates safe state mutation with optional simulation mode
-
----
 
 ## Architecture
 
@@ -38,8 +34,6 @@ The design separates:
 
 All tool executions are wrapped in safe error handling to prevent server disconnections.
 
----
-
 ## Installation
 
 ```bash
@@ -47,8 +41,6 @@ git clone https://github.com/mkjun2016/scholar-mcp.git
 cd scholar-mcp
 npm install
 ```
-
----
 
 ## Usage
 
@@ -71,8 +63,6 @@ Configure in Claude Desktop:
 }
 ```
 
----
-
 ## Example Workflow
 
 1. Call `compare_papers` with two PDF paths
@@ -85,13 +75,9 @@ Configure in Claude Desktop:
 
 This enables rapid AI-assisted literature comparison.
 
----
-
 ## Technical Notes
 
 Built on JSON-RPC over stdio (MCP) with robust error handling to ensure reliable tool execution.
-
----
 
 ## License
 
