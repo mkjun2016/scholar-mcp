@@ -1,74 +1,106 @@
 # Scholar MCP
 
-A Model Context Protocol (MCP) server for reading and analyzing academic papers in PDF format.
+A lightweight Model Context Protocol (MCP) server for reading and comparing academic papers in PDF format.
+
+Scholar MCP integrates directly with Claude Desktop to streamline literature review workflows by enabling structured PDF ingestion and multi-paper comparison via tool calls.
+
+---
+
+## Motivation
+
+Literature review is repetitive and time-consuming.
+This project automates early-stage paper analysis by connecting PDF parsing with AI through MCP.
+
+Instead of manually copying content into chat interfaces, Scholar MCP allows:
+
+* Direct PDF loading
+* Abstract extraction
+* Multi-paper comparison
+* Structured AI-assisted analysis
+
+---
 
 ## Features
 
-- **Read PDF**: Extract and read full text content from PDF files
-- **Extract Abstract**: Automatically extract the abstract section from academic papers
-- **Test Tool**: Ping tool for testing server connectivity
+* **read_pdf** — Extract full text from a PDF file
+* **extract_abstract** — Extract the abstract section
+* **compare_papers** — Extract and prepare multiple papers for comparison
+* **ping** — Test connectivity
+
+---
+
+## Architecture
+
+Claude Desktop
+→ MCP Tool Call (JSON-RPC over stdio)
+→ Scholar MCP Server
+→ PDF Processing
+→ Structured Text Response
+
+Key components:
+
+* `@modelcontextprotocol/sdk`
+* `pdf-parse`
+* Robust error-safe tool handling
+* STDIO-based communication
+
+---
 
 ## Installation
-
-Clone the repository:
 
 ```bash
 git clone https://github.com/mkjun2016/scholar-mcp.git
 cd scholar-mcp
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
+---
+
 ## Usage
 
-This MCP server communicates via stdio and is designed to be used with MCP clients like Claude Desktop.
-
-### Running the Server
+Run locally:
 
 ```bash
 node server.js
 ```
 
-### Available Tools
-
-#### `read_pdf`
-Reads the full text content of a PDF file.
-
-**Parameters:**
-- `path` (string, required): Path to the PDF file
-
-#### `extract_abstract`
-Extracts the abstract section from an academic paper.
-
-**Parameters:**
-- `path` (string, required): Path to the PDF file
-
-#### `ping`
-Test tool to verify server connectivity.
-
-## MCP Client Configuration
-
-Add this server to your MCP client configuration:
+Configure in Claude Desktop:
 
 ```json
 {
   "mcpServers": {
     "scholar-mcp": {
-      "command": "node",
-      "args": ["/path/to/scholar-mcp/server.js"]
+      "command": "/absolute/path/to/node",
+      "args": ["/absolute/path/to/scholar-mcp/server.js"]
     }
   }
 }
 ```
 
-## Dependencies
+---
 
-- [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) - MCP SDK
-- [pdf-parse](https://www.npmjs.com/package/pdf-parse) - PDF text extraction
+## Example Workflow
+
+1. Call `compare_papers` with two PDF paths
+2. Ask Claude to:
+
+   * Compare research problems
+   * Summarize methodological differences
+   * Identify key contributions
+   * Highlight research gaps
+
+This enables rapid AI-assisted literature comparison.
+
+---
+
+## Technical Notes
+
+* Uses JSON-RPC over stdio (MCP protocol)
+* Avoids stdout logging to maintain protocol integrity
+* Handles environment isolation issues (e.g., nvm vs GUI apps)
+* Implements safe error handling to prevent server disconnects
+
+---
 
 ## License
 

@@ -37,6 +37,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: "update_analysis_policy",
+        description: "Update analysis configuration policy",
+        inputSchema: {
+          type: "object",
+          properties: {
+            max_tokens: { type: "number" },
+            enable_chunking: { type: "boolean" },
+            dry_run: { type: "boolean" },
+          },
+          required: ["dry_run"],
+        },
+      },
+      {
         name: "read_pdf",
         description: "Read full text of a PDF file",
         inputSchema: {
@@ -56,6 +69,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             path: { type: "string" },
           },
           required: ["path"],
+        },
+      },
+      {
+        name: "compare_papers",
+        description:
+          "Extract abstracts (or first pages) from multiple PDFs for comparison",
+        inputSchema: {
+          type: "object",
+          properties: {
+            paths: { type: "array", items: { type: "string" }, minItems: 2 },
+          },
+          required: ["paths"],
         },
       },
     ],
@@ -117,6 +142,77 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           {
             type: "text",
             text: match ? match[1].trim() : "Abstract not found",
+          },
+        ],
+      };
+    }
+
+    // Compare Papers
+    if (name === "compare_papers") {
+      const pathsArr = args.paths;
+
+      const results = [];
+      for (const p of pathsArr) {
+        const filePath = path.resolve(p);
+
+        if (!fs.existsSync(filePath)) {
+          results.push(`---\nFILE: ${filePath}\nERROR: File not found.\n`);
+          continue;
+        }
+
+        const buffer = fs.readFileSync(filePath);
+        const data = await pdf(buffer);
+        const text = data.text || "";
+
+        const match = text.match(/abstract([\s\S]*?)(introduction|1\.)/i);
+        const abstract = match ? match[1].trim() : "";
+
+        const snippet =
+          abstract.length > 80 ? abstract : text.slice(0, 2500).trim();
+
+        results.push(`---\nFILE: ${filePath}\nEXTRACT:\n${snippet}\n`);
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: results.join("\n"),
+          },
+        ],
+      };
+    }
+
+    // Update Analysis Policy (Dry-run supported)
+    if (name === "update_analysis_policy") {
+      const { max_tokens, enable_chunking, dry_run } = args;
+
+      if (dry_run) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `
+Simulation Mode:
+- max_tokens would be set to ${max_tokens}
+- enable_chunking would be set to ${enable_chunking}
+No changes were applied.
+        `,
+            },
+          ],
+        };
+      }
+
+      global.analysisPolicy = {
+        max_tokens,
+        enable_chunking,
+      };
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Policy updated successfully.",
           },
         ],
       };
