@@ -1,22 +1,18 @@
 # Scholar MCP
 
-A lightweight Model Context Protocol (MCP) server for reading and comparing academic papers in PDF format.
-
-Scholar MCP integrates directly with Claude Desktop to streamline literature review workflows by enabling structured PDF ingestion and multi-paper comparison via tool calls.
+A lightweight MCP server for AI-assisted academic paper analysis.
 
 ---
 
 ## Motivation
 
-Literature review is repetitive and time-consuming.
-This project automates early-stage paper analysis by connecting PDF parsing with AI through MCP.
+Automates early-stage literature review by connecting PDF parsing with Claude via MCP.
 
-Instead of manually copying content into chat interfaces, Scholar MCP allows:
+Supports:
 
-* Direct PDF loading
-* Abstract extraction
-* Multi-paper comparison
-* Structured AI-assisted analysis
+- PDF ingestion
+- Abstract extraction
+- Multi-paper comparison
 
 ---
 
@@ -26,23 +22,21 @@ Instead of manually copying content into chat interfaces, Scholar MCP allows:
 * **extract_abstract** — Extract the abstract section
 * **compare_papers** — Extract and prepare multiple papers for comparison
 * **ping** — Test connectivity
+* **update_analysis_policy (with dry-run)** — Demonstrates safe state mutation with optional simulation mode
 
 ---
 
 ## Architecture
 
-Claude Desktop
-→ MCP Tool Call (JSON-RPC over stdio)
-→ Scholar MCP Server
-→ PDF Processing
-→ Structured Text Response
+Claude Desktop communicates with Scholar MCP via JSON-RPC over stdio (MCP protocol).  
+The server registers tools and handles execution through structured request handlers.
 
-Key components:
+The design separates:
 
-* `@modelcontextprotocol/sdk`
-* `pdf-parse`
-* Robust error-safe tool handling
-* STDIO-based communication
+- Read-only tools (PDF extraction & comparison)
+- State-changing tools (policy updates with optional dry-run)
+
+All tool executions are wrapped in safe error handling to prevent server disconnections.
 
 ---
 
@@ -95,10 +89,7 @@ This enables rapid AI-assisted literature comparison.
 
 ## Technical Notes
 
-* Uses JSON-RPC over stdio (MCP protocol)
-* Avoids stdout logging to maintain protocol integrity
-* Handles environment isolation issues (e.g., nvm vs GUI apps)
-* Implements safe error handling to prevent server disconnects
+Built on JSON-RPC over stdio (MCP) with robust error handling to ensure reliable tool execution.
 
 ---
 
