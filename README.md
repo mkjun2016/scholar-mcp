@@ -10,6 +10,15 @@ A Model Context Protocol (MCP) server for reading and analyzing academic papers 
 
 ## Installation
 
+Clone the repository:
+
+```bash
+git clone https://github.com/mkjun2016/scholar-mcp.git
+cd scholar-mcp
+```
+
+Install dependencies:
+
 ```bash
 npm install
 ```
