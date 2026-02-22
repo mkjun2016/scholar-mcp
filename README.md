@@ -79,6 +79,12 @@ This enables rapid AI-assisted literature comparison.
 
 Built on JSON-RPC over stdio (MCP) with robust error handling to ensure reliable tool execution.
 
+## Demo
+
+Example interaction using `compare_papers` with Claude Desktop:
+
+![Demo Screenshot](./assets/demo.png)
+
 ## License
 
 ISC
