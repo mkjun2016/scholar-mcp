@@ -69,3 +69,7 @@ Add this server to your MCP client configuration:
 
 - [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) - MCP SDK
 - [pdf-parse](https://www.npmjs.com/package/pdf-parse) - PDF text extraction
+
+## License
+
+ISC
